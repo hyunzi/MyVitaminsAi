@@ -22,8 +22,8 @@ public class RecommendController {
     * */
     @PostMapping
     public ResponseEntity<RecommendResponse> getRecommendations(@RequestBody RecommendRequest recommendRequest) {
-        //return ResponseEntity.ok(recommendService.getRecommendations(recommendRequest));
-        return ResponseEntity.ok(recommendService.getRecommendationsTest(recommendRequest));
+        return ResponseEntity.ok(recommendService.getRecommendations(recommendRequest));
+        //return ResponseEntity.ok(recommendService.getRecommendationsTest(recommendRequest));
     }
 
 }
