@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RecommendRequest {
 
+    // 사용자 세션키
+    private String sessionKey;
 }
