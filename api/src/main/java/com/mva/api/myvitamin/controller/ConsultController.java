@@ -22,6 +22,7 @@ public class ConsultController {
     * */
     @PostMapping
     public ResponseEntity<ConsultResponse> consulting(@RequestBody ConsultRequest consultRequest) {
-        return ResponseEntity.ok(consultService.consulting(consultRequest));
+        //return ResponseEntity.ok(consultService.consulting(consultRequest));
+        return ResponseEntity.ok(consultService.consultingTest(consultRequest));
     }
 }

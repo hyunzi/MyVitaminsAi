@@ -13,4 +13,5 @@ public interface ConsultService {
     * @return ConsultResponse
     * */
     public ConsultResponse consulting(ConsultRequest consultRequest);
+    public ConsultResponse consultingTest(ConsultRequest consultRequest);
 }

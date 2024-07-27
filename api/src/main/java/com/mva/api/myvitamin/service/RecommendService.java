@@ -13,4 +13,5 @@ public interface RecommendService {
      * @return RecommendResponse
      * */
     public RecommendResponse getRecommendations(RecommendRequest recommendRequest);
+    public RecommendResponse getRecommendationsTest(RecommendRequest recommendRequest);
 }

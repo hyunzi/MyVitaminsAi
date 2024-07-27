@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -16,14 +18,14 @@ public class Supplement {
     private String name;
 
     // 효능
-    private String effect;
+    private List<String> effect;
 
     // 복용 시간
     private String time;
 
     // 주의사항
-    private String caution;
+    private List<String> caution;
 
     // 이미지 Url
-    private String imageUrl;
+    private String imgUrl;
 }
