@@ -11,9 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Supplement {
 
-    // 순번
-    private String id;
-
     // 영양제명
     private String name;
 

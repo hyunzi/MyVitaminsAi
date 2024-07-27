@@ -1,16 +1,25 @@
 package com.mva.api.myvitamin.service.impl;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.cloud.FirestoreClient;
 import com.mva.api.gemini.service.impl.GeminiServiceImpl;
 import com.mva.api.myvitamin.dto.RecommendRequest;
 import com.mva.api.myvitamin.dto.RecommendResponse;
+import com.mva.api.myvitamin.dto.SessionInfo;
 import com.mva.api.myvitamin.dto.Supplement;
 import com.mva.api.myvitamin.service.RecommendService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class RecommendServiceImpl implements RecommendService {
@@ -50,7 +59,6 @@ public class RecommendServiceImpl implements RecommendService {
 
         List<Supplement> supplements = new ArrayList<>();
         supplements.add(Supplement.builder()
-                .id("1")
                 .name("Vitamin A")
                 .effect(List.of("effect1", "effect2"))
                 .time("식사와 함께")
@@ -58,9 +66,40 @@ public class RecommendServiceImpl implements RecommendService {
                 .imgUrl("https://example.com/vitamin_a.jpg")
                 .build());
 
-        return RecommendResponse.builder()
+        RecommendResponse response = RecommendResponse.builder()
                 .type("2")
                 .supplements(supplements)
                 .build();
+
+        addData(SessionInfo.builder()
+                .sessionKey(recommendRequest.getSessionKey())
+                .supplements(supplements)
+                .build());
+        return response;
+    }
+
+    public void addData(SessionInfo sessionInfo) {
+        Firestore FIRE_STORE = FirestoreClient.getFirestore();
+        String COLLECTION_NAME = "myVitaminAi";
+
+        try {
+            Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("sessionKey", sessionInfo.getSessionKey());
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+            log.info(querySnapshot.get().toString());
+
+            DocumentReference document = null;
+            if (true) {// isNotExistEmail(querySnapshot)) {
+                document = FIRE_STORE.collection(COLLECTION_NAME).document();
+                sessionInfo.setId(document.getId());
+                document.set(sessionInfo);
+                log.info("새로운 문서가 추가되었습니다. document ID: {}", document.getId());
+            } else {
+                throw new RuntimeException("이미 가입된 이메일입니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("Error add data to firebase" + e.getMessage());
+        }
     }
 }

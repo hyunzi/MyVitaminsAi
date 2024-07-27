@@ -52,7 +52,6 @@ public class ConsultServiceImpl implements ConsultService {
 
         List<Supplement> supplements = new ArrayList<>();
         supplements.add(Supplement.builder()
-                .id("1")
                 .name("Vitamin A")
                 .effect(List.of("effect1", "effect2"))
                 .time("식사와 함께")
