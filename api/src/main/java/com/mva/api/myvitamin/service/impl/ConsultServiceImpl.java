@@ -1,6 +1,5 @@
 package com.mva.api.myvitamin.service.impl;
 
-import com.mva.api.gemini.service.GeminiService;
 import com.mva.api.gemini.service.impl.GeminiServiceImpl;
 import com.mva.api.myvitamin.dto.ConsultRequest;
 import com.mva.api.myvitamin.dto.ConsultResponse;
