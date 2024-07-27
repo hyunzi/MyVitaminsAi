@@ -12,3 +12,31 @@
 * {
   font-family: 'LINESeedKR-Bd';
 }
+
+.div-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vitamin-image {
+  width: 140px;
+  height: 140px;
+}
+
+.slider-div{
+  width: 90%;
+  margin: auto;
+  margin-top: 30px !important;
+}
+
+.slider-inner-div {
+  @apply border-solid border rounded-md m-4 shadow-md;
+  width: 95% !important;
+}
+
+@layer components {
+  .btn-primary {
+    @apply py-2 px-5 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+  }
+}
