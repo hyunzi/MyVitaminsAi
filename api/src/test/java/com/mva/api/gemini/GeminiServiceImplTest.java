@@ -1,13 +1,14 @@
 package com.mva.api.gemini;
 
+import com.mva.api.gemini.service.impl.GeminiServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GeminiServiceTest {
+class GeminiServiceImplTest {
     @Autowired
-    private GeminiService service;
+    private GeminiServiceImpl service;
 
     @Test
     void getCompletion() {

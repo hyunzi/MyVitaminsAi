@@ -1,23 +1,25 @@
-package com.mva.api.gemini;
+package com.mva.api.gemini.service.impl;
 
+import com.mva.api.gemini.dto.GeminiRequest;
+import com.mva.api.gemini.dto.GeminiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GeminiService {
+public class GeminiServiceImpl {
     public static final String GEMINI_PRO = "gemini-pro";
     public static final String GEMINI_ULTIMATE = "gemini-ultimate";
     public static final String GEMINI_PRO_VISION = "gemini-pro-vision";
 
-    private final GeminiInterface geminiInterface;
+    private final com.mva.api.gemini.service.GeminiService geminiService;
 
     @Autowired
-    public GeminiService(GeminiInterface geminiInterface) {
-        this.geminiInterface = geminiInterface;
+    public GeminiServiceImpl(com.mva.api.gemini.service.GeminiService geminiService) {
+        this.geminiService = geminiService;
     }
 
     private GeminiResponse getCompletion(GeminiRequest request) {
-        return geminiInterface.getCompletion(GEMINI_PRO, request);
+        return geminiService.getCompletion(GEMINI_PRO, request);
     }
 
     public String getCompletion(String text) {

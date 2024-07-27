@@ -1,4 +1,4 @@
-package com.mva.api.gemini;
+package com.mva.api.gemini.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

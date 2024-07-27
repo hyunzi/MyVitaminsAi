@@ -1,7 +1,6 @@
 package com.mva.api.config;
 
-import com.mva.api.gemini.GeminiInterface;
-import com.mva.api.gemini.GeminiProperties;
+import com.mva.api.gemini.service.GeminiService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +27,9 @@ public class GeminiConfig {
     }
 
     @Bean
-    public GeminiInterface geminiInterface(@Qualifier("geminiRestClient") RestClient client) {
+    public GeminiService geminiInterface(@Qualifier("geminiRestClient") RestClient client) {
         RestClientAdapter adapter = RestClientAdapter.create(client);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(GeminiInterface.class);
+        return factory.createClient(GeminiService.class);
     }
 }
