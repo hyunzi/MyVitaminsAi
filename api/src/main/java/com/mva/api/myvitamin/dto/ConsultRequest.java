@@ -3,10 +3,12 @@ package com.mva.api.myvitamin.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ConsultRequest {
 
     // 컨설팅 유형 (1: 신규 추천 / 2: 기존 영양제 컨설팅)

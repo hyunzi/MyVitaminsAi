@@ -37,6 +37,8 @@ public class ConsultServiceImpl implements ConsultService {
         //리턴 값 세팅
 
 
-        return null;
+        return ConsultResponse.builder()
+                .type("1")
+                .build();
     }
 }

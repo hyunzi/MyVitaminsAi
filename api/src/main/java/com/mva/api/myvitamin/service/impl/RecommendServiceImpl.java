@@ -25,6 +25,8 @@ public class RecommendServiceImpl implements RecommendService {
         //TOP N개 정보 RecommendResponse 세팅하여 반환
 
 
-        return null;
+        return RecommendResponse.builder()
+                .type("1")
+                .build();
     }
 }

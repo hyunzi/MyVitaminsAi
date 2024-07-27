@@ -20,7 +20,7 @@ public class RecommendController {
     /*
     * 추천 목록 조회 API
     * */
-    @RequestMapping
+    @PostMapping
     public ResponseEntity<RecommendResponse> getRecommendations(@RequestBody RecommendRequest recommendRequest) {
 
         return ResponseEntity.ok(recommendService.getRecommendations(recommendRequest));

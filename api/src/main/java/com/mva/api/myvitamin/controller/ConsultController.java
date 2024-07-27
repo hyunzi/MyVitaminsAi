@@ -20,7 +20,7 @@ public class ConsultController {
     /*
     * 컨설팅 요청 API
     * */
-    @RequestMapping
+    @PostMapping
     public ResponseEntity<ConsultResponse> consulting(@RequestBody ConsultRequest consultRequest) {
         return ResponseEntity.ok(consultService.consulting(consultRequest));
     }

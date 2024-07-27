@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class RecommendRequest {
 
     // 사용자 세션키
