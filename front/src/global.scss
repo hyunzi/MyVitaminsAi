@@ -5,12 +5,16 @@
 @font-face {
   font-family: 'LINESeedKR-Bd';
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
-  font-weight: 700;
   font-style: normal;
 }
 
 * {
   font-family: 'LINESeedKR-Bd';
+}
+
+.font-light {
+  font-family: 'LINESeedKR' !important;
+  font-weight: normal;
 }
 
 .div-center {
@@ -24,19 +28,74 @@
   height: 140px;
 }
 
-.slider-div{
+.slider-div {
   width: 90%;
   margin: auto;
-  margin-top: 30px !important;
 }
 
 .slider-inner-div {
   @apply border-solid border rounded-md m-4 shadow-md;
   width: 95% !important;
+  height: 260px;
+}
+
+.time-tag {
+  padding: 0.3rem !important;
 }
 
 @layer components {
   .btn-primary {
-    @apply py-2 px-5 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+    @apply py-1.5 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-md focus:outline-none;
   }
+  .btn-info {
+    @apply py-1.5 px-4 bg-gray-600 text-white font-semibold rounded-md shadow-md focus:outline-none;
+  }
+}
+
+.text-desc {
+  @apply text-zinc-400 text-xs font-light;
+  font-family: 'LINESeedKR' !important;
+}
+
+.user-section {
+  margin-left: 25px;
+  height: 92% !important;
+}
+
+.ai-section {
+  @extend .user-section;
+  @apply bg-white;
+}
+
+.vitamins-table > thead > tr > th {
+  @apply px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase;
+}
+
+.vitamins-table > tbody > tr > td {
+  @apply px-6 py-4 whitespace-nowrap text-start text-sm font-medium text-gray-800 break-all whitespace-pre-line;
+}
+
+/* 포스트잇 UI */
+.post-it-note {
+  @apply p-3 bg-yellow-300 relative;
+  min-height: 10em;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+.post-it-note:after {
+  @apply border-solid border-yellow-300 absolute;
+  content: "";
+  bottom: -2em;
+  left: 0;
+  right: 2em;
+  border-width: 1em;
+}
+
+.post-it-note:before {
+  @apply absolute right-0 border-solid;
+  content: "";
+  bottom: -2em;
+  border-width: 2em 2em 0 0;
+  border-color: darken(rgb(253 224 71), 30%) transparent;
 }
