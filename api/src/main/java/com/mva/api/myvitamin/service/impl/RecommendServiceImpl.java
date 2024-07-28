@@ -8,10 +8,7 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import com.mva.api.gemini.service.impl.GeminiServiceImpl;
 import com.mva.api.googleImage.service.impl.GoogleImageServiceImpl;
-import com.mva.api.myvitamin.dto.RecommendRequest;
-import com.mva.api.myvitamin.dto.RecommendResponse;
-import com.mva.api.myvitamin.dto.SessionInfo;
-import com.mva.api.myvitamin.dto.Supplement;
+import com.mva.api.myvitamin.dto.*;
 import com.mva.api.myvitamin.service.RecommendService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,18 +29,19 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     public RecommendResponse getRecommendations(RecommendRequest recommendRequest) {
-        String type = (recommendRequest.getSessionKey() != null) ? "2" : "1";
+        UserEnum userType = (recommendRequest.getSessionKey() != null) ? UserEnum.EXISTING_USER : UserEnum.NEW_USER;
         List<Supplement> supplementList = new ArrayList<>();
 
         // validation check
 
-        // 사용자 데이터 가져오는 경우
-        if ("2".equals(type)) {
+        if (userType == UserEnum.EXISTING_USER) {
+            //기존 사용자 데이터 가져오는 경우
             //세션키로 USER_VITAMIN_TABLE(사용자 영양제 내역 테이블) 조회
 
             //정보가 있는 경우 RecommendResponse 세팅하여 반환
-        } // 신규 데이터 가져오는 경우
+        }
         else {
+            //신규 사용자 데이터 가져오는 경우
             //질문할 데이터 가공
             String question = "현대 사회인들이 가장 많이 선호하는 영양제를 순위를 매겨 10개 알고 싶어\n" +
                     "영양제 이름 ( name ), 영양제 효능( effect -> String 배열로 보여줘. 꼭 각 요소를 큰 따옴표로 묶어줘. 내용이 많을 경우 2개로 정리해줘), 복용하면 좋은 시간 대( time ), 주의사항( caution -> String 배열로 보여줘. 꼭 각 요소를 큰 따옴표로 묶어줘.내용이 많을 경우 2개로 정리해줘 ) 를 list (supplements) 로 정리해주고,\n" +
@@ -78,12 +76,12 @@ public class RecommendServiceImpl implements RecommendService {
 
             //Gemini 응답 결과 json 으로 파싱
             JSONObject jsonObject = new JSONObject(answer);
-            JSONArray supplements = jsonObject.getJSONArray("supplements");
+            JSONArray supplements = jsonObject.getJSONArray(JSONConstants.SUPPLIEMENTS);
             supplementList = this.combineService.combineData(supplements);
         }
 
         return RecommendResponse.builder()
-                .type(type)
+                .type(userType.getTermsValue())
                 .supplements(supplementList)
                 .build();
     }

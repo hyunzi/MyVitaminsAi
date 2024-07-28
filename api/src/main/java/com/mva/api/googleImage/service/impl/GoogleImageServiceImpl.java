@@ -3,6 +3,7 @@ package com.mva.api.googleImage.service.impl;
 import com.mva.api.config.GoogleImageProperties;
 import com.mva.api.gemini.service.GeminiService;
 import com.mva.api.googleImage.service.GoogleImageService;
+import com.mva.api.myvitamin.dto.JSONConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +33,18 @@ public class GoogleImageServiceImpl implements GoogleImageService {
 
     public String getImgUrl(String jsonData) {
         JSONObject jsonObject = new JSONObject(jsonData);
-        JSONArray items = jsonObject.getJSONArray("items");
+        JSONArray items = jsonObject.getJSONArray(JSONConstants.ITEMS);
 
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
-            if (item.has("pagemap")) {
-                JSONObject pagemap = item.getJSONObject("pagemap");
-                if (pagemap.has("cse_image")) {
-                    JSONArray cseImageArray = pagemap.getJSONArray("cse_image");
+            if (item.has(JSONConstants.PAGE_MAP)) {
+                JSONObject pagemap = item.getJSONObject(JSONConstants.PAGE_MAP);
+                if (pagemap.has(JSONConstants.CSE_IMAGE)) {
+                    JSONArray cseImageArray = pagemap.getJSONArray(JSONConstants.CSE_IMAGE);
                     if (cseImageArray.length() > 0) {
                         JSONObject cseImage = cseImageArray.getJSONObject(0);
-                        if (cseImage.has("src")) {
-                            return cseImage.getString("src");
+                        if (cseImage.has(JSONConstants.SRC)) {
+                            return cseImage.getString(JSONConstants.SRC);
                         }
                     }
                 }
