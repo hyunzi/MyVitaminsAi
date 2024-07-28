@@ -8,10 +8,10 @@ import java.util.List;
 public interface CombineJSONService {
 
     /*
-     * 추천 목록 조회 메소드
+     * Gemini 응답 JSON과 Google Custom Search IMAGE URL 가공
      *
-     * @param recommendRequest
-     * @return RecommendResponse
+     * @param supplements
+     * @return JSONArray
      * */
     public List<Supplement> combineData(JSONArray supplements);
 }
