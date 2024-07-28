@@ -3,10 +3,12 @@ package com.mva.api.myvitamin.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class Supplement {
@@ -25,4 +27,8 @@ public class Supplement {
 
     // 이미지 Url
     private String imgUrl;
+
+    public Supplement() {
+
+    }
 }

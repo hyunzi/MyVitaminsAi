@@ -89,6 +89,11 @@
             <artifactId>google-api-services-customsearch</artifactId>
             <version>v1-rev20240417-2.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
