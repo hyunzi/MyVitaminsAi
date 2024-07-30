@@ -45,7 +45,7 @@
 
 @layer components {
   .btn-primary {
-    @apply py-1.5 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-md focus:outline-none;
+    @apply py-1.5 px-4 bg-yellow-600 text-white font-semibold rounded-md shadow-md focus:outline-none;
   }
   .btn-info {
     @apply py-1.5 px-4 bg-gray-600 text-white font-semibold rounded-md shadow-md focus:outline-none;

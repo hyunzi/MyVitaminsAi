@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.4.19",
+    "axios": "^1.7.2",
     "npx": "^10.2.2",
     "postcss": "^8.4.40",
     "react": "^18.3.1",
@@ -18,7 +19,8 @@
     "sass-loader": "^16.0.0",
     "scss": "^0.2.4",
     "slick-carousel": "^1.8.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.4"
   },
   "scripts": {
     "start": "react-scripts start",
