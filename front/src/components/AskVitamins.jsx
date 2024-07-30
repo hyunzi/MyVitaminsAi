@@ -32,9 +32,11 @@ const AskVitamins = () => {
             try {
                 setCompleteAsk(false);
                 const { supplement, symptom, comment } = formData;
+                // 복용중인 영양제가 있을 경우 type 을 2(기존 영양제 컨설팅)으로 넘기고, 아니면 1로 넘김
+                let type = supplement ? 2 : 1;
 
                 const requestData = {
-                    type: 1,
+                    type: type,
                     supplement,
                     symptom,
                     comment
