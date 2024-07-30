@@ -1,20 +1,64 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import {FaAsterisk, FaQuestion, FaUser} from "react-icons/fa";
+import React, { useState, useCallback } from 'react'
+import { FaAsterisk, FaQuestion, FaUser } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import VitaminModal from "./VitaminModal";
 import useStore from "../store.js";
 import SkeletonAskVitamins from "./SkeletonAskVitamins";
+import axios from "../axios";
 
 const AskVitamins = () => {
     const [completeAsk, setCompleteAsk] = useState(true);
     const [openModal, setOpenModal] = useState(false);
-    const [vitaminList, setVitaminList] = useState([]);
     const loading = useStore((state) => state.loading);
-    const setLoading = useStore((state) => state.setLoading);
+    const [formData, setFormData] = useState({
+        symptom: '',
+        comment: '',
+        supplement: ''
+    });
+    const [result, setResult] = useState({
+        'supplements': [],
+        'reason': '',
+        'totalOpinion': ''
+    });
 
     const onOpenModal = () => {
         setOpenModal(!openModal);
     }
+
+    const handleSubmit = useCallback((event) => {
+        event.preventDefault();
+
+        (async () => {
+            try {
+                setCompleteAsk(false);
+                const { supplement, symptom, comment } = formData;
+
+                const requestData = {
+                    type: 1,
+                    supplement,
+                    symptom,
+                    comment
+                };
+
+                const response = await axios.post('/api/consult', requestData);
+                setResult(response.data);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+
+            } finally {
+                setCompleteAsk(true);
+            }
+        })();
+    }, []);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
 
     return (
         <div>
@@ -35,14 +79,14 @@ const AskVitamins = () => {
                                     <hr/>
                                 </div>
                                 <div className='w-100 pl-8 pr-8 pt-2'>
-                                    <form>
+                                    <form onSubmit={handleSubmit}>
                                         <div className="grid grid-cols-12 gap-2 mb-4">
                                             <div className='pt-5 col-span-2'>
                                                 <FaAsterisk className='inline px-1 mb-1 text-red-500'/>
                                                 <label htmlFor="symptom" className="inline text-sm font-medium text-gray-900">증상</label>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="symptom" name="symptom" rows="2" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                <textarea id="symptom" name="symptom" rows="2" defaultValue={formData.symptom} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-12 gap-2 mb-4">
@@ -51,7 +95,7 @@ const AskVitamins = () => {
                                                 <label htmlFor="comment" className="inline text-sm font-medium text-gray-900">특이사항</label>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="comment" name="comment" rows="2" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                <textarea id="comment" name="comment" rows="2" defaultValue={formData.comment} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
 
@@ -60,7 +104,7 @@ const AskVitamins = () => {
                                                 <label htmlFor="supplement" className="inline ml-2 text-sm font-medium text-gray-900">복용 중인 영양제</label>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="supplement" name="supplement" rows="2" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                <textarea id="supplement" name="supplement" rows="2" defaultValue={formData.supplement} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
 
@@ -80,11 +124,11 @@ const AskVitamins = () => {
                                     <div className="grid grid-cols-12 gap-2 mb-4">
                                         <div className='col-span-6'>
                                             <span className='pb-5 text-sm'>[종합의견]</span>
-                                            <div className='post-it-note'></div>
+                                            <div className='post-it-note'>{result.totalOpinion}</div>
                                         </div>
                                         <div className="inline col-span-6">
                                             <span  className='pb-5 text-sm'>[영양제 추천 이유]</span>
-                                            <div className='post-it-note'></div>
+                                            <div className='post-it-note'>{result.reason}</div>
                                         </div>
                                     </div>
 
@@ -96,7 +140,7 @@ const AskVitamins = () => {
                         </div>
                         <>
                             {openModal && (
-                                <VitaminModal vitaminList={vitaminList} onOpenModal={onOpenModal}/>
+                                <VitaminModal vitaminList={result.supplements} onOpenModal={onOpenModal}/>
                             )}
                         </>
                     </>
