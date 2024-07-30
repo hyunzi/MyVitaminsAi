@@ -123,23 +123,27 @@ public class RecommendServiceImpl implements RecommendService {
     public RecommendResponse getRecommendationsTest(RecommendRequest recommendRequest) {
 
         List<Supplement> supplements = new ArrayList<>();
-        supplements.add(Supplement.builder()
-                .name("Vitamin A")
-                .effect(List.of("effect1", "effect2"))
-                .time("식사와 함께")
-                .caution(List.of("Caution 1", "Caution 2"))
-                .imgUrl("https://example.com/vitamin_a.jpg")
-                .build());
+
+        for(int i = 0; i < 15; i++) {
+            supplements.add(Supplement.builder()
+                    .name("Vitamin A")
+                    .effect(List.of("effect1", "effect2"))
+                    .time("식사와 함께")
+                    .caution(List.of("Caution 1", "Caution 2"))
+                    .imgUrl("https://example.com/vitamin_a.jpg")
+                    .build());
+        }
 
         RecommendResponse response = RecommendResponse.builder()
                 .type("2")
                 .supplements(supplements)
                 .build();
 
-        addData(SessionInfo.builder()
-                .sessionKey(recommendRequest.getSessionKey())
-                .supplements(supplements)
-                .build());
+        // FIXME sessionKey 없을 때 대응 필요
+//        addData(SessionInfo.builder()
+//                .sessionKey(recommendRequest.getSessionKey())
+//                .supplements(supplements)
+//                .build());
         return response;
     }
 
