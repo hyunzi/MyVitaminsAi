@@ -45,12 +45,12 @@ public class ConsultServiceImpl implements ConsultService {
 
     private String getQuestion(ConsultRequest consultRequest) {
         ConsultEnum consultType = ConsultEnum.fromTermsValue(consultRequest.getType());
-        String question = "";
+        StringBuilder question = new StringBuilder();
 
         //질문할 데이터 가공
         if (consultType == ConsultEnum.NEW_CONSULT) {
             // 신규
-            question = "아래 증상과 특이사항을 참고해서 영양제를 추천해줘.\n" +
+            question.append("아래 증상과 특이사항을 참고해서 영양제를 추천해줘.\n" +
                     "\n" +
                     "증상 : " + consultRequest.getSymptom() +
                     "\n" +
@@ -81,11 +81,11 @@ public class ConsultServiceImpl implements ConsultService {
                     " ]\n" +
                     "\"reason\": \"종합비타민은 이미 다양한 비타민과 미네랄을 포함하고 있어 별도로 추가하지 않았습니다.\",\n" +
                     "\"totalOpinion\": \"추천된 영양제 조합은 전반적인 건강 증진과 함께 특히 피로감, 무릎 통증, 수면 문제 개선에 도움이 될 수 있습니다. \"\n" +
-                    "}\n";
+                    "}\n");
         }
         else if (consultType == ConsultEnum.EXISTING_CONSULT) {
             // 기존
-            question = "아래 기존 복용하고 있는 영양제들과 증상, 특이사항을 참고해서 영양제를 추천해줘.\n" +
+            question.append("아래 기존 복용하고 있는 영양제들과 증상, 특이사항을 참고해서 영양제를 추천해줘.\n" +
                     "\n" +
                     "복용하고 있는 영양제들 :" + consultRequest.getSupplement() +
                     "\n" +
@@ -118,9 +118,9 @@ public class ConsultServiceImpl implements ConsultService {
                     "  ]\n" +
                     "\"reason\": \"종합비타민은 이미 다양한 비타민과 미네랄을 포함하고 있어 별도로 추가하지 않았습니다.\",\n" +
                     "\"totalOpinion\": \"추천된 영양제 조합은 전반적인 건강 증진과 함께 특히 피로감, 무릎 통증, 수면 문제 개선에 도움이 될 수 있습니다. \"\n" +
-                    "}";
+                    "}");
         }
-        return question;
+        return question.toString();
     }
 
     /* just return mock data */

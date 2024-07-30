@@ -43,8 +43,9 @@ public class RecommendServiceImpl implements RecommendService {
         else {
             //신규 사용자 데이터 가져오는 경우
             //질문할 데이터 가공
-            String question = "현대 사회인들이 가장 많이 선호하는 영양제를 순위를 매겨 10개 알고 싶어\n" +
-                    "영양제 이름 ( name ), 영양제 효능( effect -> String 배열로 보여줘. 꼭 각 요소를 큰 따옴표로 묶어줘. 내용이 많을 경우 2개로 정리해줘), 복용하면 좋은 시간 대( time ), 주의사항( caution -> String 배열로 보여줘. 꼭 각 요소를 큰 따옴표로 묶어줘.내용이 많을 경우 2개로 정리해줘 ) 를 list (supplements) 로 정리해주고,\n" +
+            StringBuilder question = new StringBuilder();
+            question.append("현대 사회인들이 가장 많이 선호하는 영양제를 순위를 매겨 10개 알고 싶어\n" +
+                    "영양제 이름 ( name ), 영양제 효능( effect -> String 배열로 보여줘. 내용이 많을 경우 2개로 요약,정리해줘), 복용하면 좋은 시간 대( time ), 주의사항( caution -> String 배열로 보여줘. 내용이 많을 경우 2개로 정리해줘 ) 를 list (supplements) 로 정리해주고,\n" +
                     "\n" +
                     "모든 대답은 JSON 구조로 응답해주는데 key값으로는 괄호 안의 단어로 주고, value값은 한글로 줘.\n" +
                     "꼭 괄호 안의 단어에 해당하는 정보만 명확하게 제공해줘.\n" +
@@ -69,11 +70,10 @@ public class RecommendServiceImpl implements RecommendService {
                     " ]\n" +
                     "}\n" +
                     "\n" +
-                    "effect 배열의 각 요소를 꼭 큰 따옴표로 묶어줘";
+                    "effect 배열의 각 요소를 꼭 큰 따옴표로 묶어줘");
 
             //Gemini 에게 질문 요청
-            String answer = geminiService.getCompletion(question);
-
+            String answer = geminiService.getCompletion(question.toString());
             //Gemini 응답 결과 json 으로 파싱
             JSONObject jsonObject = new JSONObject(answer);
             JSONArray supplements = jsonObject.getJSONArray(JSONConstants.SUPPLIEMENTS);
