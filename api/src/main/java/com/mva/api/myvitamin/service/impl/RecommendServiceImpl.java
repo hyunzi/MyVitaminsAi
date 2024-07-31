@@ -7,7 +7,6 @@ import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import com.mva.api.gemini.service.impl.GeminiServiceImpl;
-import com.mva.api.googleImage.service.impl.GoogleImageServiceImpl;
 import com.mva.api.myvitamin.dto.*;
 import com.mva.api.myvitamin.service.RecommendService;
 import lombok.AllArgsConstructor;
@@ -25,7 +24,7 @@ import java.util.List;
 public class RecommendServiceImpl implements RecommendService {
 
     private final GeminiServiceImpl geminiService;
-    private final CombineJSONServiceImpl combineService;
+    private final MergeJSONServiceImpl combineService;
 
     @Override
     public RecommendResponse getRecommendations(RecommendRequest recommendRequest) {
@@ -42,42 +41,25 @@ public class RecommendServiceImpl implements RecommendService {
         }
         else {
             //신규 사용자 데이터 가져오는 경우
-            //질문할 데이터 가공
             StringBuilder question = new StringBuilder();
-            question.append("현대 사회인들이 가장 많이 선호하는 영양제를 순위를 매겨 10개 알고 싶어\n" +
-                    "영양제 이름 ( name ), 영양제 효능( effect -> String 배열로 보여줘. 내용이 많을 경우 2개로 요약,정리해줘), 복용하면 좋은 시간 대( time ), 주의사항( caution -> String 배열로 보여줘. 내용이 많을 경우 2개로 정리해줘 ) 를 list (supplements) 로 정리해주고,\n" +
-                    "\n" +
-                    "모든 대답은 JSON 구조로 응답해주는데 key값으로는 괄호 안의 단어로 주고, value값은 한글로 줘.\n" +
-                    "꼭 괄호 안의 단어에 해당하는 정보만 명확하게 제공해줘.\n" +
-                    "예시 속 구조를 꼭 지켜줘. key값은 꼭 JSON 구조에 맞게 큰 따옴표로 감싸주고, value값은 배열일 경우, 각 요소를 큰 따옴표로 묶어서 형식에 맞춰줘. effect와 caution 배열 안 값 개수가 2개가 넘어갈 경우, 요약해서 2개로 정리해줘\n" +
-                    "\n" +
-                    "예시는 아래와 같아.\n" +
-                    "{\n" +
-                    " \"supplements\": [\n" +
-                    " {\n" +
-                    " \"name\": \"종합비타민\",\n" +
-                    " \"effect\": [\"다양한 비타민과 미네랄 보충\", \"면역력 강화\"],\n" +
-                    " \"time\": \"아침 식사 후\",\n" +
-                    " \"caution\": [\"냉장 보관 필수\", \"장 기능 저하 시 복용 전 전문가 상담\"]\n" +
-                    " },\n" +
-                    "...\n" +
-                    " {\n" +
-                    " \"name\": \"마그네슘\",\n" +
-                    " \"effect\": [\"근육 이완\", \"스트레스 감소\"],\n" +
-                    " \"time\": \"아침 식사 후\",\n" +
-                    " \"caution\": [\"냉장 보관 필수\", \"장 기능 저하 시 복용 전 전문가 상담\"]\n" +
-                    " }\n" +
-                    " ]\n" +
-                    "}\n" +
-                    "\n" +
-                    "effect 배열의 각 요소를 꼭 큰 따옴표로 묶어줘");
+            question.append("현대 사회인들에게 필수적이고 선호되는 영양제를 순위를 매겨 10개 알고 싶어.\n" +
+                    "영양제 명, 영양제 효능, 복용하면 좋은 시간대, 주의사항을 list로 정리해서 JSON구조로 알려주는데,\n" +
+                    "각각 name, effect, time, caution 이라는 Key로 매겨주고 value값들은 한글로 줘. 그리고 이 list의 이름은 supplements야.");
 
-            //Gemini 에게 질문 요청
+            long start = System.currentTimeMillis();
             String answer = geminiService.getCompletion(question.toString());
-            //Gemini 응답 결과 json 으로 파싱
-            JSONObject jsonObject = new JSONObject(answer);
-            JSONArray supplements = jsonObject.getJSONArray(JSONConstants.SUPPLIEMENTS);
-            supplementList = this.combineService.combineData(supplements);
+            System.out.println("Recommend 소요 시간 : "+(System.currentTimeMillis() - start)/1000);
+            answer = answer.replaceFirst("(?i)```json\\s*\\{", "{");
+
+            if (answer != null && answer.trim().startsWith("{")) {
+                long start2 = System.currentTimeMillis();
+                JSONObject jsonObject = new JSONObject(answer);
+                JSONArray supplements = jsonObject.getJSONArray(JSONConstants.SUPPLIEMENTS);
+                supplementList = this.combineService.combineData(supplements);
+                System.out.println("Recommend - json 가공 및 imageUrl 소요 시간 : "+(System.currentTimeMillis() - start2)/1000);
+            } else {
+                log.error("Invalid JSON response :: "+answer);
+            }
         }
 
         return RecommendResponse.builder()

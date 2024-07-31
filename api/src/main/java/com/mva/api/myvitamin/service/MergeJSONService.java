@@ -5,7 +5,7 @@ import org.json.JSONArray;
 
 import java.util.List;
 
-public interface CombineJSONService {
+public interface MergeJSONService {
 
     /*
      * Gemini 응답 JSON과 Google Custom Search IMAGE URL 가공

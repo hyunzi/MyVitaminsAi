@@ -1,7 +1,7 @@
 package com.mva.api.myvitamin.service.impl;
 
 
-import com.mva.api.myvitamin.service.ImageService;
+import com.mva.api.myvitamin.service.Base64ImageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.Base64;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class ImageServiceImpl implements ImageService {
+public class Base64ImageServiceImpl implements Base64ImageService {
     public String getBase64Image(String imgUrl) {
         String base64Image = "";
         try {
