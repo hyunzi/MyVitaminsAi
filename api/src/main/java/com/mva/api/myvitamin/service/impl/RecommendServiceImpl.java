@@ -23,43 +23,19 @@ import java.util.List;
 @AllArgsConstructor
 public class RecommendServiceImpl implements RecommendService {
 
+    private static final String COLLECTION_NAME = "myVitaminAi";
     private final GeminiServiceImpl geminiService;
     private final MergeJSONServiceImpl combineService;
 
     @Override
     public RecommendResponse getRecommendations(RecommendRequest recommendRequest) {
         UserEnum userType = (recommendRequest.getSessionKey() != null) ? UserEnum.EXISTING_USER : UserEnum.NEW_USER;
-        List<Supplement> supplementList = new ArrayList<>();
-
-        // validation check
+        List<Supplement> supplementList;
 
         if (userType == UserEnum.EXISTING_USER) {
-            //기존 사용자 데이터 가져오는 경우
-            //세션키로 USER_VITAMIN_TABLE(사용자 영양제 내역 테이블) 조회
-
-            //정보가 있는 경우 RecommendResponse 세팅하여 반환
-        }
-        else {
-            //신규 사용자 데이터 가져오는 경우
-            StringBuilder question = new StringBuilder();
-            question.append("현대 사회인들에게 필수적이고 선호되는 영양제를 순위를 매겨 10개 알고 싶어.\n" +
-                    "영양제 명, 영양제 효능, 복용하면 좋은 시간대, 주의사항을 list로 정리해서 JSON구조로 알려주는데,\n" +
-                    "각각 name, effect, time, caution 이라는 Key로 매겨주고 value값들은 한글로 줘. 그리고 이 list의 이름은 supplements야.");
-
-            long start = System.currentTimeMillis();
-            String answer = geminiService.getCompletion(question.toString());
-            System.out.println("Recommend 소요 시간 : "+(System.currentTimeMillis() - start)/1000);
-            answer = answer.replaceFirst("(?i)```json\\s*\\{", "{");
-
-            if (answer != null && answer.trim().startsWith("{")) {
-                long start2 = System.currentTimeMillis();
-                JSONObject jsonObject = new JSONObject(answer);
-                JSONArray supplements = jsonObject.getJSONArray(JSONConstants.SUPPLIEMENTS);
-                supplementList = this.combineService.combineData(supplements);
-                System.out.println("Recommend - json 가공 및 imageUrl 소요 시간 : "+(System.currentTimeMillis() - start2)/1000);
-            } else {
-                log.error("Invalid JSON response :: "+answer);
-            }
+            supplementList = getSupplementsForExistingUser(recommendRequest.getSessionKey());
+        } else {
+            supplementList = getRecommendationsForNewUser();
         }
 
         return RecommendResponse.builder()
@@ -68,13 +44,78 @@ public class RecommendServiceImpl implements RecommendService {
                 .build();
     }
 
-    /* just return mock data */
+    private List<Supplement> getSupplementsForExistingUser(String sessionKey) {
+        // 기존 사용자의 세션 키를 이용해 데이터를 조회하고 결과를 리턴하는 로직 구현
+        // 예시:
+        // return getSupplementsFromDatabase(sessionKey);
+        return new ArrayList<>(); // Placeholder for actual implementation
+    }
+
+    private List<Supplement> getRecommendationsForNewUser() {
+        String question = "현대 사회인들에게 필수적이고 선호되는 영양제를 순위를 매겨 10개 알고 싶어.\n" +
+                "영양제 명, 영양제 효능, 복용하면 좋은 시간대, 주의사항을 list로 정리해서 JSON구조로 알려주는데,\n" +
+                "각각 name, effect, time, caution 이라는 Key로 매겨주고 value값들은 한글로 줘. 그리고 이 list의 이름은 supplements야.";
+        String answer = getGeminiResponse(question);
+
+        return parseSupplementsFromJson(answer);
+    }
+
+    private String getGeminiResponse(String question) {
+        long start = System.currentTimeMillis();
+        String answer = geminiService.getCompletion(question);
+        log.info("Recommend 소요 시간 : {}초", (System.currentTimeMillis() - start) / 1000);
+
+        if (answer != null) {
+            answer = answer.replaceAll("(?s)```(?:json|JSON)?\\s*", "");
+            answer = answer.replaceFirst("(?s)```\\s*$", "");
+        }
+        return answer;
+    }
+
+    private List<Supplement> parseSupplementsFromJson(String answer) {
+        List<Supplement> supplementList = new ArrayList<>();
+
+        try {
+            if (answer != null && answer.trim().startsWith("{")) {
+                JSONObject jsonObject = new JSONObject(answer);
+                JSONArray supplements = jsonObject.optJSONArray(JSONConstants.SUPPLIEMENTS);
+
+                if (supplements != null) {
+                    long start = System.currentTimeMillis();
+                    supplementList = this.combineService.combineData(supplements);
+                    log.info("Recommend - JSON 가공 및 이미지 URL 처리 시간 : {}초", (System.currentTimeMillis() - start) / 1000);
+                }
+            } else {
+                log.error("Invalid JSON response :: {}", answer);
+            }
+        } catch (Exception e) {
+            log.error("Error parsing JSON response", e);
+        }
+
+        return supplementList;
+    }
+
     @Override
     public RecommendResponse getRecommendationsTest(RecommendRequest recommendRequest) {
+        List<Supplement> supplements = createMockSupplements();
 
+        if (recommendRequest.getSessionKey() != null) {
+            addData(SessionInfo.builder()
+                    .sessionKey(recommendRequest.getSessionKey())
+                    .supplements(supplements)
+                    .build());
+        }
+
+        return RecommendResponse.builder()
+                .type("2")
+                .supplements(supplements)
+                .build();
+    }
+
+    private List<Supplement> createMockSupplements() {
         List<Supplement> supplements = new ArrayList<>();
 
-        for(int i = 0; i < 15; i++) {
+        for (int i = 0; i < 15; i++) {
             supplements.add(Supplement.builder()
                     .name("Vitamin A")
                     .effect(List.of("effect1", "effect2"))
@@ -84,41 +125,35 @@ public class RecommendServiceImpl implements RecommendService {
                     .build());
         }
 
-        RecommendResponse response = RecommendResponse.builder()
-                .type("2")
-                .supplements(supplements)
-                .build();
-
-        // FIXME sessionKey 없을 때 대응 필요
-//        addData(SessionInfo.builder()
-//                .sessionKey(recommendRequest.getSessionKey())
-//                .supplements(supplements)
-//                .build());
-        return response;
+        return supplements;
     }
 
     public void addData(SessionInfo sessionInfo) {
-        Firestore FIRE_STORE = FirestoreClient.getFirestore();
-        String COLLECTION_NAME = "myVitaminAi";
+        Firestore firestore = FirestoreClient.getFirestore();
 
         try {
-            Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("sessionKey", sessionInfo.getSessionKey());
+            Query query = firestore.collection(COLLECTION_NAME).whereEqualTo("sessionKey", sessionInfo.getSessionKey());
             ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-            log.info(querySnapshot.get().toString());
-
-            DocumentReference document = null;
-            if (true) {// isNotExistEmail(querySnapshot)) {
-                document = FIRE_STORE.collection(COLLECTION_NAME).document();
+            if (isNewSession(querySnapshot)) {
+                DocumentReference document = firestore.collection(COLLECTION_NAME).document();
                 sessionInfo.setId(document.getId());
                 document.set(sessionInfo);
                 log.info("새로운 문서가 추가되었습니다. document ID: {}", document.getId());
             } else {
-                throw new RuntimeException("이미 가입된 이메일입니다.");
+                log.warn("Session already exists for sessionKey: {}", sessionInfo.getSessionKey());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            log.info("Error add data to firebase" + e.getMessage());
+            log.error("Error adding data to Firebase", e);
+        }
+    }
+
+    private boolean isNewSession(ApiFuture<QuerySnapshot> querySnapshot) {
+        try {
+            return querySnapshot.get().isEmpty();
+        } catch (Exception e) {
+            log.error("Error checking if session is new", e);
+            return false;
         }
     }
 }

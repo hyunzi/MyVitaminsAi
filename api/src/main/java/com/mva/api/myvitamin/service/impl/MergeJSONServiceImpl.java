@@ -28,7 +28,7 @@ public class MergeJSONServiceImpl implements MergeJSONService {
         for (int i = 0; i < supplements.length(); i++) {
             JSONObject supplementJson = supplements.getJSONObject(i);
 
-            String name = supplementJson.getString(JSONConstants.NAME);
+            String name = supplementJson.get(JSONConstants.NAME).toString();
             String imgUrl = this.retrieveImageUrl(name);
             supplementJson.put("imgUrl", imgUrl != null ? imgUrl : "");
 
@@ -88,9 +88,11 @@ public class MergeJSONServiceImpl implements MergeJSONService {
             String imgJsonData = restTemplate.getForObject(imgSearchUrl, String.class);
             imgUrl = googleImageServiceImpl.getImgUrl(imgJsonData);
         } catch (Exception ex) {
+            log.error(ex.getMessage());
             imgUrl = "error-image";
         }
 
         return imgUrl;
+        //return "test-image";
     }
 }
