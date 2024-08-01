@@ -87,6 +87,8 @@ public class ConsultServiceImpl implements ConsultService {
 
             System.out.println("Consult - json 가공 및 imageUrl 소요 시간 : "+(System.currentTimeMillis() - start)/1000);
 
+            // todo db insert
+
             return ConsultResponse.builder()
                     .type(type)
                     .supplements(supplementList)

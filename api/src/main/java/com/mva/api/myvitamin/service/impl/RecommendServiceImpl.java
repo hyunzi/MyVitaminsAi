@@ -45,6 +45,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private List<Supplement> getSupplementsForExistingUser(String sessionKey) {
+        // todo db select
         // 기존 사용자의 세션 키를 이용해 데이터를 조회하고 결과를 리턴하는 로직 구현
         // 예시:
         // return getSupplementsFromDatabase(sessionKey);
@@ -52,6 +53,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private List<Supplement> getRecommendationsForNewUser() {
+        // todo db select으로 수정 필요 -> 서버 시작 시, insert된 제미나이 response 값 return
         String question = "현대 사회인들에게 필수적이고 선호되는 영양제를 순위를 매겨 10개 알고 싶어.\n" +
                 "영양제 명, 영양제 효능, 복용하면 좋은 시간대, 주의사항을 list로 정리해서 JSON구조로 알려주는데,\n" +
                 "각각 name, effect, time, caution 이라는 Key로 매겨주고 value값들은 한글로 줘. 그리고 이 list의 이름은 supplements야.";
