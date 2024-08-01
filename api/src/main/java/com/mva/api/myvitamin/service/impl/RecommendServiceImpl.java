@@ -131,31 +131,27 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     public void addData(SessionInfo sessionInfo) {
-        Firestore firestore = FirestoreClient.getFirestore();
+        Firestore FIRE_STORE = FirestoreClient.getFirestore();
+        String COLLECTION_NAME = "myVitaminAi";
 
         try {
-            Query query = firestore.collection(COLLECTION_NAME).whereEqualTo("sessionKey", sessionInfo.getSessionKey());
+            Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("sessionKey", sessionInfo.getSessionKey());
             ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-            if (isNewSession(querySnapshot)) {
-                DocumentReference document = firestore.collection(COLLECTION_NAME).document();
+            log.info(querySnapshot.get().toString());
+
+            DocumentReference document = null;
+            if (true) {// isNotExistEmail(querySnapshot)) {
+                document = FIRE_STORE.collection(COLLECTION_NAME).document();
                 sessionInfo.setId(document.getId());
                 document.set(sessionInfo);
                 log.info("새로운 문서가 추가되었습니다. document ID: {}", document.getId());
             } else {
-                log.warn("Session already exists for sessionKey: {}", sessionInfo.getSessionKey());
+                throw new RuntimeException("이미 가입된 이메일입니다.");
             }
         } catch (Exception e) {
-            log.error("Error adding data to Firebase", e);
-        }
-    }
-
-    private boolean isNewSession(ApiFuture<QuerySnapshot> querySnapshot) {
-        try {
-            return querySnapshot.get().isEmpty();
-        } catch (Exception e) {
-            log.error("Error checking if session is new", e);
-            return false;
+            e.printStackTrace();
+            log.info("Error add data to firebase" + e.getMessage());
         }
     }
 }
