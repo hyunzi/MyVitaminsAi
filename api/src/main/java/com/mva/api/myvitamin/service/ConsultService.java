@@ -2,6 +2,7 @@ package com.mva.api.myvitamin.service;
 
 import com.mva.api.myvitamin.dto.ConsultRequest;
 import com.mva.api.myvitamin.dto.ConsultResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 public interface ConsultService {
@@ -12,6 +13,6 @@ public interface ConsultService {
     * @param consultRequest
     * @return ConsultResponse
     * */
-    public ConsultResponse consulting(ConsultRequest consultRequest);
+    public ConsultResponse consulting(ConsultRequest consultRequest, String ipAddress);
     public ConsultResponse consultingTest(ConsultRequest consultRequest);
 }

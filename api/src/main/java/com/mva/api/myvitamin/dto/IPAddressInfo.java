@@ -1,21 +1,19 @@
 package com.mva.api.myvitamin.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.List;
 
 @Data
 @Builder
-public class SessionInfo {
+public class IPAddressInfo {
 
     // firebase Id
     private String id;
 
-    // 세션키
-    private String sessionKey;
+    // 사용자별 IP
+    private String ipAddress;
 
     // 영양제 리스트
     private List<Supplement> supplements;

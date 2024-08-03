@@ -1,9 +1,10 @@
 package com.mva.api.myvitamin.service.impl;
 
-import com.google.api.client.json.Json;
 import com.mva.api.gemini.service.impl.GeminiServiceImpl;
 import com.mva.api.myvitamin.dto.*;
+import com.mva.api.myvitamin.repository.SupplementRepository;
 import com.mva.api.myvitamin.service.ConsultService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -21,12 +23,13 @@ public class ConsultServiceImpl implements ConsultService {
 
     private final GeminiServiceImpl geminiService;
     private final MergeJSONServiceImpl combineService;
+    private final SupplementRepository supplementRepository;
 
     @Override
-    public ConsultResponse consulting(ConsultRequest consultRequest) {
+    public ConsultResponse consulting(ConsultRequest consultRequest, String ipAddress) {
         String question = getQuestion(consultRequest);
         String answer = getGeminiResponse(question);
-        return parseResponse(answer, consultRequest.getType());
+        return parseResponse(answer, consultRequest.getType(), ipAddress);
     }
 
     private String getQuestion(ConsultRequest consultRequest) {
@@ -67,12 +70,11 @@ public class ConsultServiceImpl implements ConsultService {
         return answer;
     }
 
-    private ConsultResponse parseResponse(String answer, String type) {
+    private ConsultResponse parseResponse(String answer, String type, String ipAddress) {
         if (answer == null || !answer.trim().startsWith("{")) {
             log.error("Invalid JSON response :: " + answer);
             return createErrorResponse(type);
         }
-
         try {
             long start = System.currentTimeMillis();
             JSONObject jsonObject = new JSONObject(answer);
@@ -87,7 +89,10 @@ public class ConsultServiceImpl implements ConsultService {
 
             System.out.println("Consult - json 가공 및 imageUrl 소요 시간 : "+(System.currentTimeMillis() - start)/1000);
 
-            // todo db insert
+            supplementRepository.addData(IPAddressInfo.builder()
+                    .ipAddress(ipAddress)
+                    .supplements(supplementList)
+                    .build());
 
             return ConsultResponse.builder()
                     .type(type)

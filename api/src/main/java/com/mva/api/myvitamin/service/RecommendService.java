@@ -2,6 +2,7 @@ package com.mva.api.myvitamin.service;
 
 import com.mva.api.myvitamin.dto.RecommendRequest;
 import com.mva.api.myvitamin.dto.RecommendResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 public interface RecommendService {
@@ -12,6 +13,6 @@ public interface RecommendService {
      * @param recommendRequest
      * @return RecommendResponse
      * */
-    public RecommendResponse getRecommendations(RecommendRequest recommendRequest);
+    public RecommendResponse getRecommendations(RecommendRequest recommendRequest, String ipAddress);
     public RecommendResponse getRecommendationsTest(RecommendRequest recommendRequest);
 }
