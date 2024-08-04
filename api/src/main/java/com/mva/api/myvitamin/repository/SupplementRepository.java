@@ -3,9 +3,8 @@ package com.mva.api.myvitamin.repository;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import com.mva.api.myvitamin.dto.IPAddressInfo;
+import com.mva.api.myvitamin.dto.SessionInfo;
 import com.mva.api.myvitamin.dto.Supplement;
-import com.mva.api.myvitamin.service.impl.Base64ImageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -20,18 +19,15 @@ public class SupplementRepository {
     private static final String COLLECTION_NAME = "supplement";
     private final Firestore FIRE_STORE = FirestoreClient.getFirestore();
 
-    public void addData(IPAddressInfo IPAddressInfo) {
+    public void addData(SessionInfo SessionInfo) {
         try {
-            Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("ipAddress", IPAddressInfo.getIpAddress());
+            Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("sessionKey", SessionInfo.getSessionKey());
             ApiFuture<QuerySnapshot> querySnapshot = query.get();
-
-            log.info(querySnapshot.get().toString());
-
             DocumentReference document = null;
             if (true) {// isNotExistEmail(querySnapshot)) {
                 document = FIRE_STORE.collection(COLLECTION_NAME).document();
-                IPAddressInfo.setId(document.getId());
-                document.set(IPAddressInfo);
+                SessionInfo.setId(document.getId());
+                document.set(SessionInfo);
                 log.info("새로운 문서가 추가되었습니다. document ID: {}", document.getId());
             } else {
                 throw new RuntimeException("이미 가입된 이메일입니다.");
@@ -42,8 +38,8 @@ public class SupplementRepository {
         }
     }
 
-    public boolean findUserByIpAddress(String IpAddress) {
-        Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("ipAddress", IpAddress);
+    public boolean findUserBySessionKey(String sessionKey) {
+        Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("sessionKey", sessionKey);
         ApiFuture<QuerySnapshot> future = query.get();
         try {
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();
@@ -56,8 +52,8 @@ public class SupplementRepository {
             throw new RuntimeException("문서 조회를 실패하였습니다.");
         }
     }
-    public List<Supplement> findSupplementByUser(String IpAddress) {
-        Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("ipAddress", IpAddress);
+    public List<Supplement> findSupplementByUser(String sessionKey) {
+        Query query = FIRE_STORE.collection(COLLECTION_NAME).whereEqualTo("sessionKey", sessionKey);
         ApiFuture<QuerySnapshot> future = query.get();
         try {
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();

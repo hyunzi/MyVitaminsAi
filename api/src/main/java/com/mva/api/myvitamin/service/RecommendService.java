@@ -13,6 +13,6 @@ public interface RecommendService {
      * @param recommendRequest
      * @return RecommendResponse
      * */
-    public RecommendResponse getRecommendations(RecommendRequest recommendRequest, String ipAddress);
+    public RecommendResponse getRecommendations(RecommendRequest recommendRequest);
     public RecommendResponse getRecommendationsTest(RecommendRequest recommendRequest);
 }
