@@ -53,8 +53,6 @@ public class ConsultServiceImpl implements ConsultService {
                 .append("추가로, 영양제 조합과 제외시킨 영양제가 있다면 그 이유, 복용 시 주의사항 및 추가조언을 알려줘.\n\n")
                 .append("먼저 list 안에 있는 것들은 각각 name, effect, time, caution 이고 list이름은 supplements야.\n")
                 .append("그리고 추가 데이터는 각각 reason, totalOpinion으로 알려줘.");
-
-        log.info("question.toString() :: -> {},",question.toString());
         return question.toString();
     }
 
