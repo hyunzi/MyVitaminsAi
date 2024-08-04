@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, ForwardRef } from 'react'
 import { FaAsterisk, FaQuestion, FaUser } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import VitaminModal from "./VitaminModal";
 import useStore from "../store.js";
 import SkeletonAskVitamins from "./SkeletonAskVitamins";
 import axios from "../axios";
+import QuestionTooltip from "./QuestionTooltip";
 
 const AskVitamins = () => {
     const [completeAsk, setCompleteAsk] = useState(true);
@@ -39,14 +40,16 @@ const AskVitamins = () => {
                     type: type,
                     supplement,
                     symptom,
-                    comment
+                    comment,
+                    sessionKey: localStorage.getItem('user')
                 };
 
-                const response = await axios.post('/api/consult', requestData);
+                const response= await axios.post('/api/consult', requestData);
                 setResult(response.data);
 
             } catch (error) {
                 console.error('Error fetching data:', error);
+                alert('증상과 특이사항을 자세하게 명시하여 다시 질의해 주세요!');
 
             } finally {
                 setCompleteAsk(true);
@@ -86,27 +89,33 @@ const AskVitamins = () => {
                                             <div className='pt-5 col-span-2'>
                                                 <FaAsterisk className='inline px-1 mb-1 text-red-500'/>
                                                 <label htmlFor="symptom" className="inline text-sm font-medium text-gray-900">증상</label>
+                                                <QuestionTooltip text='현재 겪고있는 증상을 콤마(,)로 구분하여 자세하게 적어주세요!'/>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="symptom" name="symptom" rows="2" defaultValue={formData.symptom} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                <textarea id="symptom" name="symptom" rows="2" placeholder='  예시) 배가 아픔, 머리가 아픔, 몸이 피곤함' defaultValue={formData.symptom} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-12 gap-2 mb-4">
                                             <div className='pt-5 col-span-2'>
                                                 <FaAsterisk className='inline px-1 mb-1 text-red-500'/>
                                                 <label htmlFor="comment" className="inline text-sm font-medium text-gray-900">특이사항</label>
+                                                {/* FIXME : 내용 수정 필요
+                                                <QuestionTooltip text='현재 겪고 있는 '/>
+                                                */}
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="comment" name="comment" rows="2" defaultValue={formData.comment} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                {/*  FIXME : 내용 수정 필요
+                                                <textarea id="comment" name="comment" rows="2" placeholder='  예시) 배가 아픔, 머리가 아픔, 몸이 피곤함' defaultValue={formData.comment} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>*/}
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-12 gap-2 mb-4">
                                             <div className='pt-5 col-span-2'>
                                                 <label htmlFor="supplement" className="inline ml-2 text-sm font-medium text-gray-900">복용 중인 영양제</label>
+                                                <QuestionTooltip text='복용중인 영양제를 콤마(,)로 구분하여 적어주세요!'/>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="supplement" name="supplement" rows="2" defaultValue={formData.supplement} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                <textarea id="supplement" name="supplement" rows="2" placeholder='  예시) 리팜핀, 퀴놀론' defaultValue={formData.supplement} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
 
