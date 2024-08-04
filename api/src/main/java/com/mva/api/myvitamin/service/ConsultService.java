@@ -13,6 +13,6 @@ public interface ConsultService {
     * @param consultRequest
     * @return ConsultResponse
     * */
-    public ConsultResponse consulting(ConsultRequest consultRequest, String ipAddress) throws Exception;
+    public ConsultResponse consulting(ConsultRequest consultRequest, String sessionId) throws Exception;
     public ConsultResponse consultingTest(ConsultRequest consultRequest);
 }

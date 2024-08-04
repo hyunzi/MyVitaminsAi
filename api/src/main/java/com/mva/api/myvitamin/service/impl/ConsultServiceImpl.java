@@ -4,7 +4,6 @@ import com.mva.api.gemini.service.impl.GeminiServiceImpl;
 import com.mva.api.myvitamin.dto.*;
 import com.mva.api.myvitamin.repository.SupplementRepository;
 import com.mva.api.myvitamin.service.ConsultService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +12,6 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -26,10 +24,11 @@ public class ConsultServiceImpl implements ConsultService {
     private final SupplementRepository supplementRepository;
 
     @Override
-    public ConsultResponse consulting(ConsultRequest consultRequest, String ipAddress) throws Exception {
+    public ConsultResponse consulting(ConsultRequest consultRequest, String sessionId) throws Exception {
+        String sessionKey = (consultRequest.getSessionKey() != null ? consultRequest.getSessionKey() : sessionId);
         String question = getQuestion(consultRequest);
         String answer = getGeminiResponse(question);
-        return parseResponse(answer, consultRequest.getType(), ipAddress);
+        return parseResponse(answer, consultRequest.getType(), sessionKey);
     }
 
     private String getQuestion(ConsultRequest consultRequest) {
@@ -70,7 +69,7 @@ public class ConsultServiceImpl implements ConsultService {
         return answer;
     }
 
-    private ConsultResponse parseResponse(String answer, String type, String ipAddress) throws Exception {
+    private ConsultResponse parseResponse(String answer, String type, String sessionKey) throws Exception {
         try {
             if(answer == null || !answer.trim().startsWith("{")) {
                 log.error("Invalid JSON response :: " + answer);
@@ -90,8 +89,8 @@ public class ConsultServiceImpl implements ConsultService {
 
             System.out.println("Consult - json 가공 및 imageUrl 소요 시간 : "+(System.currentTimeMillis() - start)/1000);
 
-            supplementRepository.addData(IPAddressInfo.builder()
-                    .ipAddress(ipAddress)
+            supplementRepository.addData(SessionInfo.builder()
+                    .sessionKey(sessionKey)
                     .supplements(supplementList)
                     .build());
 
