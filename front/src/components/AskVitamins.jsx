@@ -1,4 +1,4 @@
-import React, { useState, useCallback, ForwardRef } from 'react'
+import React, { useState } from 'react'
 import { FaAsterisk, FaQuestion, FaUser } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import VitaminModal from "./VitaminModal";
@@ -11,11 +11,8 @@ const AskVitamins = () => {
     const [completeAsk, setCompleteAsk] = useState(true);
     const [openModal, setOpenModal] = useState(false);
     const loading = useStore((state) => state.loading);
-    const [formData, setFormData] = useState({
-        symptom: '',
-        comment: '',
-        supplement: ''
-    });
+    const [formData, setFormData] = useState({});
+
     const [result, setResult] = useState({
         'supplements': [],
         'reason': '',
@@ -26,13 +23,13 @@ const AskVitamins = () => {
         setOpenModal(!openModal);
     }
 
-    const handleSubmit = useCallback((event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
 
         (async () => {
             try {
                 setCompleteAsk(false);
-                const { supplement, symptom, comment } = formData;
+                const { symptom, comment, supplement } = formData;
                 // 복용중인 영양제가 있을 경우 type 을 2(기존 영양제 컨설팅)으로 넘기고, 아니면 1로 넘김
                 let type = supplement ? 2 : 1;
 
@@ -55,7 +52,7 @@ const AskVitamins = () => {
                 setCompleteAsk(true);
             }
         })();
-    }, []);
+    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -92,7 +89,7 @@ const AskVitamins = () => {
                                                 <QuestionTooltip text='현재 겪고있는 증상을 콤마(,)로 구분하여 자세하게 적어주세요!'/>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="symptom" name="symptom" rows="2" placeholder='  예시) 배가 아픔, 머리가 아픔, 몸이 피곤함' defaultValue={formData.symptom} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                <textarea id="symptom" name="symptom" rows="2" placeholder='  예시) 배가 아픔, 머리가 아픔, 몸이 피곤함' onChange={handleChange} value={formData.symptom} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-12 gap-2 mb-4">
@@ -102,7 +99,7 @@ const AskVitamins = () => {
                                                 <QuestionTooltip text='영양제 처방 시 주의가 필요한 사항을 작성해주세요!'/>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="comment" name="comment" rows="2" placeholder='  예시) 큰 알약 못먹음, 항생제 복용중' defaultValue={formData.comment} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>*
+                                                <textarea id="comment" name="comment" rows="2" placeholder='  예시) 큰 알약 못먹음, 항생제 복용중' onChange={handleChange} value={formData.comment} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
 
@@ -112,7 +109,7 @@ const AskVitamins = () => {
                                                 <QuestionTooltip text='복용중인 영양제를 콤마(,)로 구분하여 적어주세요!'/>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                <textarea id="supplement" name="supplement" rows="2" placeholder='  예시) 리팜핀, 퀴놀론' defaultValue={formData.supplement} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                                <textarea id="supplement" name="supplement" rows="2" placeholder='  예시) 리팜핀, 퀴놀론' onChange={handleChange} value={formData.supplement} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                             </div>
                                         </div>
 
