@@ -7,13 +7,13 @@ import java.util.List;
 
 @Data
 @Builder
-public class IPAddressInfo {
+public class SessionInfo {
 
     // firebase Id
     private String id;
 
-    // 사용자별 IP
-    private String ipAddress;
+    // 사용자별 sessionKey
+    private String sessionKey;
 
     // 영양제 리스트
     private List<Supplement> supplements;

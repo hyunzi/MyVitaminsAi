@@ -4,7 +4,6 @@ import com.mva.api.gemini.service.impl.GeminiServiceImpl;
 import com.mva.api.myvitamin.dto.*;
 import com.mva.api.myvitamin.repository.SupplementRepository;
 import com.mva.api.myvitamin.service.RecommendService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -12,7 +11,6 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -24,12 +22,13 @@ public class RecommendServiceImpl implements RecommendService {
     private final SupplementRepository supplementRepository;
 
     @Override
-    public RecommendResponse getRecommendations(RecommendRequest recommendRequest, String ipAddress) {
-        UserEnum userType = (supplementRepository.findUserByIpAddress(ipAddress)) ? UserEnum.EXISTING_USER : UserEnum.NEW_USER;
+    public RecommendResponse getRecommendations(RecommendRequest recommendRequest) {
+        log.info("recommendRequest.sessionKey :: {} ->", recommendRequest.getSessionKey());
+        UserEnum userType = (supplementRepository.findUserBySessionKey(recommendRequest.getSessionKey())) ? UserEnum.EXISTING_USER : UserEnum.NEW_USER;
         List<Supplement> supplementList;
 
         if (userType == UserEnum.EXISTING_USER) {
-            supplementList = getSupplementsForExistingUser(ipAddress);
+            supplementList = getSupplementsForExistingUser(recommendRequest.getSessionKey());
         } else {
             supplementList = getRecommendationsForNewUser();
         }
@@ -40,9 +39,9 @@ public class RecommendServiceImpl implements RecommendService {
                 .build();
     }
 
-    private List<Supplement> getSupplementsForExistingUser(String ipAddress) {
+    private List<Supplement> getSupplementsForExistingUser(String sessionKey) {
         // 기존 사용자의 IP를 이용해 데이터를 조회하고 결과를 리턴하는 로직 구현
-        return supplementRepository.findSupplementByUser(ipAddress);
+        return supplementRepository.findSupplementByUser(sessionKey);
     }
 
     private List<Supplement> getRecommendationsForNewUser() {
@@ -95,8 +94,8 @@ public class RecommendServiceImpl implements RecommendService {
         List<Supplement> supplements = createMockSupplements();
 
         if (recommendRequest.getSessionKey() != null) {
-            supplementRepository.addData(IPAddressInfo.builder()
-                    .ipAddress(recommendRequest.getSessionKey())
+            supplementRepository.addData(SessionInfo.builder()
+                    .sessionKey(recommendRequest.getSessionKey())
                     .supplements(supplements)
                     .build());
         }
