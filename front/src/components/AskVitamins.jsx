@@ -99,13 +99,10 @@ const AskVitamins = () => {
                                             <div className='pt-5 col-span-2'>
                                                 <FaAsterisk className='inline px-1 mb-1 text-red-500'/>
                                                 <label htmlFor="comment" className="inline text-sm font-medium text-gray-900">특이사항</label>
-                                                {/* FIXME : 내용 수정 필요
-                                                <QuestionTooltip text='현재 겪고 있는 '/>
-                                                */}
+                                                <QuestionTooltip text='영양제 처방 시 주의가 필요한 사항을 작성해주세요!'/>
                                             </div>
                                             <div className="inline mt-2 col-span-10">
-                                                {/*  FIXME : 내용 수정 필요
-                                                <textarea id="comment" name="comment" rows="2" placeholder='  예시) 배가 아픔, 머리가 아픔, 몸이 피곤함' defaultValue={formData.comment} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>*/}
+                                                <textarea id="comment" name="comment" rows="2" placeholder='  예시) 큰 알약 못먹음, 항생제 복용중' defaultValue={formData.comment} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>*
                                             </div>
                                         </div>
 
