@@ -24,7 +24,7 @@ public class ConsultController {
     * 컨설팅 요청 API
     * */
     @PostMapping
-    public ResponseEntity<ConsultResponse> consulting(HttpServletRequest request, @RequestBody ConsultRequest consultRequest) {
+    public ResponseEntity<ConsultResponse> consulting(HttpServletRequest request, @RequestBody ConsultRequest consultRequest) throws Exception {
         String ipAddresses = request.getRemoteAddr();
         String ipAddress = Arrays.stream(ipAddresses.split(","))  // Client IP
                 .findFirst()

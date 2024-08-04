@@ -22,4 +22,7 @@ public class ConsultRequest {
 
     // 특이사항
     private String comment;
+
+    // 세션키
+    private String sessionKey;
 }

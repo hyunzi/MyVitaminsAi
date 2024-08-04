@@ -26,7 +26,7 @@ public class ConsultServiceImpl implements ConsultService {
     private final SupplementRepository supplementRepository;
 
     @Override
-    public ConsultResponse consulting(ConsultRequest consultRequest, String ipAddress) {
+    public ConsultResponse consulting(ConsultRequest consultRequest, String ipAddress) throws Exception {
         String question = getQuestion(consultRequest);
         String answer = getGeminiResponse(question);
         return parseResponse(answer, consultRequest.getType(), ipAddress);
@@ -70,12 +70,13 @@ public class ConsultServiceImpl implements ConsultService {
         return answer;
     }
 
-    private ConsultResponse parseResponse(String answer, String type, String ipAddress) {
-        if (answer == null || !answer.trim().startsWith("{")) {
-            log.error("Invalid JSON response :: " + answer);
-            return createErrorResponse(type);
-        }
+    private ConsultResponse parseResponse(String answer, String type, String ipAddress) throws Exception {
         try {
+            if(answer == null || !answer.trim().startsWith("{")) {
+                log.error("Invalid JSON response :: " + answer);
+                throw new Exception("Invalid JSON response :: " + answer);
+            }
+
             long start = System.currentTimeMillis();
             JSONObject jsonObject = new JSONObject(answer);
 
@@ -102,7 +103,8 @@ public class ConsultServiceImpl implements ConsultService {
                     .build();
         } catch (Exception ex) {
             log.error("Error parsing JSON response", ex);
-            return createErrorResponse(type);
+            throw ex;
+            //return createErrorResponse(type);
         }
     }
 
