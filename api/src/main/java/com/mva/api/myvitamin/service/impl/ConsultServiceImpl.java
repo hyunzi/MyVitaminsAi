@@ -54,6 +54,7 @@ public class ConsultServiceImpl implements ConsultService {
                 .append("먼저 list 안에 있는 것들은 각각 name, effect, time, caution 이고 list이름은 supplements야.\n")
                 .append("그리고 추가 데이터는 각각 reason, totalOpinion으로 알려줘.");
 
+        log.info("question.toString() :: -> {},",question.toString());
         return question.toString();
     }
 

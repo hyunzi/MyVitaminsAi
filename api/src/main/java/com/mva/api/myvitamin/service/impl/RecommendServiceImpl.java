@@ -23,7 +23,6 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     public RecommendResponse getRecommendations(RecommendRequest recommendRequest) {
-        log.info("recommendRequest.sessionKey :: {} ->", recommendRequest.getSessionKey());
         UserEnum userType = (supplementRepository.findUserBySessionKey(recommendRequest.getSessionKey())) ? UserEnum.EXISTING_USER : UserEnum.NEW_USER;
         List<Supplement> supplementList;
 
