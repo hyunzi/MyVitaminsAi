@@ -20,10 +20,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         try {
-            ClassPathResource classPathResource = new ClassPathResource("config/firebaseKey.json");
-            File firebaseKeyFile = Paths.get(classPathResource.getURI()).toFile();
-
-            FileInputStream serviceAccount = new FileInputStream(firebaseKeyFile);
+            FileInputStream serviceAccount = new FileInputStream("C://firebaseKey.json");
             FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
             FirebaseApp.initializeApp(options);
 
