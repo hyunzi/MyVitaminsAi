@@ -15,6 +15,9 @@
 # front 경로로 이동
 cd front
 
+# npm 라이브러리 설치
+npm install
+
 # frontend 실행
 npm start
 ```
