@@ -1,4 +1,4 @@
-# My Vitamin AI API
+# My Vitamin AI
 
 ### 요약
 나만의 비타민 AI 솔루션 서비스
