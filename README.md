@@ -23,7 +23,7 @@ npm install
 npm start
 ```
 2. backend 실행
-```
+```npm
 # api 경로로 이동
 cd api
 
