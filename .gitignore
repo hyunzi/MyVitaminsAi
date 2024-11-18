@@ -53,3 +53,6 @@ build/
 /front/npm-debug.log*
 /front/yarn-debug.log*
 /front/yarn-error.log*
+
+# firebase json Key
+/api/.env
